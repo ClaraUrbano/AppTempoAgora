@@ -15,23 +15,27 @@ namespace AppTempoAgora.Services
         {
             string appID = "12a414e6696c7e51ab4e523bf1c2bdda";
 
-            string queryString = "http://api.openweathermap.org/data/2.5/weather?q=" + cidade + "&units=metric" + "&appid=" + appID;
+            string queryString = "https://api.openweathermap.org/data/2.5/weather?q=" + cidade + "&units=metric" + "&appid=" + appID;
             dynamic resultado = await getDataFromService(queryString).ConfigureAwait(false);
 
 
             if (resultado["weather"] != null)
             {
                 Tempo previsao = new Tempo();
+
                 previsao.Title = (string)resultado["name"];
-                previsao.Temperature = (string)resultado["main"]["temp"] + " C";
-                previsao.Wind = (string)resultado["wind"]["speed"] + "mph";
-                previsao.Humidity = (string)resultado["main"]["humidity"] + " %";
+                previsao.Temperature = (string)resultado["main"]["temp"] + "ºC";
+                previsao.Wind = (string)resultado["wind"]["speed"] + " mph";
+                previsao.Humidity = (string)resultado["main"]["humidity"] + "%";
                 previsao.Visibility = (string)resultado["weather"][0]["main"];
+
                 DateTime time = new DateTime(1970, 1, 1, 0, 0, 0, 0);
                 DateTime sunrise = time.AddSeconds((double)resultado["sys"]["sunrise"]);
                 DateTime sunset = time.AddSeconds((double)resultado["sys"]["sunset"]);
+
                 previsao.Sunrise = String.Format("{0:d/MM/yyyy HH:mm:ss}", sunrise);
-                previsao.Sunset = String.Format("0:d/MM/yyyy HH:mm:ss}", sunset);
+                previsao.Sunset = String.Format("{0:d/MM/yyyy HH:mm:ss}", sunset);
+
                 return previsao;
             }
             else
@@ -56,7 +60,7 @@ namespace AppTempoAgora.Services
         {
             string appId = "12a414e6696c7e51ab4e523bf1c2bdda";
 
-            string url = string.Format("http://api.openweathermap.org/data/2.5/daily?q={0}&unit=metric&cnt=1&APPID={1}", city.Trim(), appId);
+            string url = string.Format("https://api.openweathermap.org/data/2.5/daily?q={0}&unit=metric&cnt=1&APPID={1}", city.Trim(), appId);
             HttpClient client = new HttpClient();
             var response = await client.GetAsync(url);
             dynamic data = null;
